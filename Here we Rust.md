@@ -4,9 +4,9 @@ theme: Poster, 1
 
 ![](red.jpg)
 
-<!-- ![autoplay loop](water.mov) -->
-
 ---
+
+## Structures, simple structures
 
 ```rust
 struct Rocket {
@@ -20,6 +20,8 @@ struct Rocket {
 ^ no class, only struct
 
 ---
+
+## No ugly overloaded constructor
 
 ```rust
 impl Rocket {
@@ -38,6 +40,8 @@ impl Rocket {
 
 ---
 
+## Match, powerfull switch-case
+
 ```rust
 let elon = String::from("Elon Musk");
 
@@ -49,27 +53,79 @@ match falcon.owner.as_ref() {
 }
 ```
 
-<!-- // same as
+---
 
-if let "Elon Musk" = falcon.owner.as_ref() {
-    println!("Hello Elon !")
-} -->
+## But... Elon do Cars too
 
-^ try using `elon` again, it doesn't work
+```rust
+struct Car {
+    position: [f32; 3],
+    velocity: [f32; 3],
+    color: [u8; 3],
+    owner: String,
+}
+
+impl Car {
+    fn with_owner(owner: String) -> Self {
+        // same as before...
+    }
+}
+```
+
+_**Whoops !** Duplication of function declaration_
 
 ---
+
+## Why not declaring a trait ?
+
+```rust
+trait Vehicle {
+    fn with_owner(owner: String) -> Self;
+}
+```
+
+_a trait is a contract you sign with an object._
+
+---
+
+## Easy to implement
+
+```rust
+impl Vehicle for Rocket {
+    fn with_owner(owner: String) -> Self {
+        // ...
+    }
+}
+
+impl Vehicle for Car {
+    fn with_owner(owner: String) -> Self {
+        // ...
+    }
+}
+```
+
+---
+
+## [fit] _**linear types**_
+
+![autoplay loop](water.mov)
+
+---
+
+## Moving, cloning, copying
 
 ```rust
 let elon = String::from("Elon Musk");
 
-// cloning `elon` explicitly
 let falcon = Rocket::with_owner(elon.clone());
 
-// moving `elon`
 let model_s = Car::with_owner(elon);
 
-// can't use `elon` after moving it...
+println!("Can I speak to you {} ?", elon);
+// can't use value after move       ^^^^
 ```
+
+^ try using `elon` again, it doesn't work
 
 ---
 
@@ -77,11 +133,37 @@ let model_s = Car::with_owner(elon);
 
 ---
 
+## a person wrapper seems more correct
+
 ```rust
-enum Terrain {
-    Land,
-    Water,
-    SubWater,
+struct Person {
+    name: String,
+    age: u8,
+}
+
+impl Person {
+    fn new(name: String, age: u8) -> Self {
+        Self { name, age }
+    }
+}
+```
+
+---
+
+## let's update the trait a little
+
+```rust
+trait Vehicle {
+    fn with_owner(person: Person) -> Self;
+}
+
+impl Vehicle for Rocket {
+    fn with_owner(person: Person) -> Self {
+        Self {
+            owner: person.name,
+            // ...
+        }
+    }
 }
 ```
 
@@ -89,3 +171,6 @@ enum Terrain {
 
 > Once you can walk barefoot (c), it's easy to walk with shoes (go) but it will take time to learn to ride a bike (rust)
 -- /u/freakhill on Reddit
+
+---
+
