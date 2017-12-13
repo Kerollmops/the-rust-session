@@ -1,78 +1,142 @@
 theme: Poster, 1
 
-# [fit] _**Here we Rust**_
+# [fit] _**Here we Rust !**_
 
 ![](red.jpg)
 
 ---
 
-## Structures, simple structures
+## some primitive types
+
+```rust
+let integer: i32 = 42;
+let unsigned: u64 = 42_000;
+let float: f64 = 32.542;
+
+let boolean: bool = true;
+
+let array = [0.0; 3];
+let slice = &[3, 4, 5];
+
+let utf8_char = '😀';
+let utf8_str = "I like 🐢!";
+
+let tuples = (3, "cookies", 'b');
+```
+
+---
+
+## mutability, constancy by default
+
+```rust
+// all bindings are immutable by default
+let thing = 42;
+
+// but you can make them mutable if necessary
+let mut another_thing = 32;
+another_thing += 10;
+
+assert_eq!(another_thing, 42);
+```
+
+---
+
+## visibility, privacy is the key
+
+```rust
+struct Safe {
+    pub lock: SafeLock,
+    content: Content,
+}
+
+// assume we declare `Safe::new`
+let safe = Safe::new();
+
+println!("The lock shows {}", safe.lock);
+
+println!("The content is {}", safe.content);
+// the `content` field is private  ^^^^^^^
+```
+
+---
+
+## enums
+
+```rust
+enum Color {
+    White,
+    Silver,
+    Pink,
+    Red,
+}
+
+enum Animal {
+    Sheep { color: Color, shaved: bool },
+    PolarBear,
+    Salmon(Color),
+    Wolf(Color),
+}
+```
+
+---
+
+## constructors for enums
+
+```rust
+impl Animal {
+    fn new_sheep(color: Color) -> Self {
+        Animal::Sheep { color: color, shaved: false }
+    }
+
+    fn new_salmon(color: Color) -> Self {
+        Animal::Salmon(color)
+    }
+
+    // ...
+}
+```
+
+---
+
+## structures
 
 ```rust
 struct Rocket {
     position: [f32; 3],
     velocity: [f32; 3],
-    color: [u8; 3],
-    owner: String,
 }
-```
 
-^ no class, only struct
-
----
-
-## No ugly overloaded constructor
-
-```rust
-impl Rocket {
-    fn with_owner(owner: String) -> Self {
-        Self {
-            position: [0.0; 3],
-            velocity: [0.0; 3],
-            color: [0, 0, 0],
-            owner: owner,
-        }
-    }
-}
-```
-
-^ constructor doesn't exists, static methods are used for this
-
----
-
-## Match, powerfull switch-case
-
-```rust
-let elon = String::from("Elon Musk");
-
-let falcon = Rocket::with_owner(elon);
-
-match falcon.owner.as_ref() {
-    "Elon Musk" => println!("Hello Elon !"),
-    _ => (),
-}
-```
-
----
-
-## But... Elon do Cars too
-
-```rust
 struct Car {
     position: [f32; 3],
     velocity: [f32; 3],
-    color: [u8; 3],
-    owner: String,
+}
+```
+
+---
+
+## methods for structures
+
+```rust
+impl Rocket {
+    fn position(&self) -> [f32; 3] {
+        self.position
+    }
 }
 
 impl Car {
-    fn with_owner(owner: String) -> Self {
-        // same as before...
+    fn position(&self) -> [f32; 3] {
+        self.position
     }
 }
 ```
 
-_**Whoops !** Duplication of function declaration_
+---
+
+# [fit] _**Whoops !**_
+
+![](crime.jpg)
+
+^ duplication of code
 
 ---
 
@@ -80,11 +144,14 @@ _**Whoops !** Duplication of function declaration_
 
 ```rust
 trait Vehicle {
-    fn with_owner(owner: String) -> Self;
+    fn new() -> Self;
+
+    fn position(&self) -> [f32; 3];
+    fn velocity(&self) -> [f32; 3];
 }
 ```
 
-_a trait is a contract you sign with an object._
+_a Trait is a contract you sign with an object_
 
 ---
 
@@ -92,15 +159,71 @@ _a trait is a contract you sign with an object._
 
 ```rust
 impl Vehicle for Rocket {
-    fn with_owner(owner: String) -> Self {
-        // ...
-    }
+    fn new() -> Self { /* ... */ }
+
+    fn position(&self) -> [f32; 3] { self.position }
+    fn velocity(&self) -> [f32; 3] { self.velocity }
 }
 
 impl Vehicle for Car {
-    fn with_owner(owner: String) -> Self {
-        // ...
-    }
+    fn new() -> Self { /* ... */ }
+
+    fn position(&self) -> [f32; 3] { self.position }
+    fn velocity(&self) -> [f32; 3] { self.velocity }
+}
+```
+
+---
+
+# [fit] _**Match**_
+
+![](magdalena.jpg)
+
+---
+
+## a better switch case
+
+```rust
+let age = 42_u32;
+
+let message = match age {
+    0...8  => "you are too young, sorry !",
+    9...18 => "ok body, you come in !",
+    _      => "you are too old, man !",
+};
+
+println!("{}", message);
+```
+
+---
+
+## with complex partterns it's the same
+
+```rust
+let person = ("Elon", "Musk", 1971);
+
+match person {
+    ("Elon", "Musk", _)  => println!("Hello Elon !"),
+    (name, lastname, birth) => {
+        println!("Hello {} {}", name, lastname)
+    },
+}
+```
+
+---
+
+## syntactic sugar for simple cases
+
+```rust
+let person = ("Xavier", "Niel", 1962);
+
+if let ("Xavier", "Niel", _) = person
+{
+    println!("Hi Xavier !")
+}
+else
+{
+    println!("Whooops ! who are you ?")
 }
 ```
 
@@ -112,17 +235,36 @@ impl Vehicle for Car {
 
 ---
 
+## Types without Copy
+
+```rust
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn with_name(name: String) -> Self {
+        Self { name }
+    }
+}
+```
+
+---
+
 ## Moving, cloning, copying
 
 ```rust
-let elon = String::from("Elon Musk");
+fn enter_in_the_house(person: Person) {
+    // ...
+}
 
-let falcon = Rocket::with_owner(elon.clone());
+let name = String::from("Elon Musk");
+let elon = Person::with_name(elon);
 
-let model_s = Car::with_owner(elon);
+enter_in_the_house(elon);
 
-println!("Can I speak to you {} ?", elon);
-// can't use value after move       ^^^^
+let use_elon = elon;
+//             ^^^^ can't use value after move
 ```
 
 ^ try using `elon` again, it doesn't work
@@ -133,28 +275,13 @@ println!("Can I speak to you {} ?", elon);
 
 ---
 
-## a person wrapper seems more correct
-
-```rust
-struct Person {
-    name: String,
-    age: u8,
-}
-
-impl Person {
-    fn new(name: String, age: u8) -> Self {
-        Self { name, age }
-    }
-}
-```
-
----
-
 ## let's update the trait a little
 
 ```rust
 trait Vehicle {
     fn with_owner(person: Person) -> Self;
+
+    // ...
 }
 
 impl Vehicle for Rocket {
