@@ -26,6 +26,22 @@ let tuples = (3, "cookies", 'b');
 
 ---
 
+## usefull enums
+
+```rust
+enum Option<T> {
+    Some(T),
+    None,
+}
+
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+---
+
 ## mutability, constancy by default
 
 ```rust
@@ -84,11 +100,11 @@ enum Animal {
 
 ```rust
 impl Animal {
-    fn new_sheep(color: Color) -> Self {
+    fn sheep(color: Color) -> Self {
         Animal::Sheep { color: color, shaved: false }
     }
 
-    fn new_salmon(color: Color) -> Self {
+    fn salmon(color: Color) -> Self {
         Animal::Salmon(color)
     }
 
@@ -175,13 +191,54 @@ impl Vehicle for Car {
 
 ---
 
+# [fit] _**Generics**_
+
+![](trou-de-ver.jpg)
+
+---
+
+## for functions
+
+```rust
+fn display_a_vehicle<V: Vehicle>(vehicle: V)
+{
+    let position = vehicle.position();
+    let velocity = vehicle.velocity();
+
+    println!("the vehicle position is {}", position);
+    println!("the vehicle velocity is {}", velocity);
+}
+```
+
+---
+
+## for custom types
+
+```rust
+struct Garage<V: Vehicle> {
+    vehicle: Option<V>,
+}
+
+impl<V: Vehicle> Garage<V> {
+    fn empty() -> Self {
+        Self { vehicle: None }
+    }
+
+    fn with_vehicle(vehicle: V) -> Self {
+        Self { vehicle: Some(vehicle) }
+    }
+}
+```
+
+---
+
 # [fit] _**Match**_
 
 ![](magdalena.jpg)
 
 ---
 
-## a better switch case
+## a switch case but better
 
 ```rust
 let age = 42_u32;
@@ -197,7 +254,7 @@ println!("{}", message);
 
 ---
 
-## with complex partterns it's the same
+## with complex partterns
 
 ```rust
 let person = ("Elon", "Musk", 1971);
@@ -229,7 +286,7 @@ else
 
 ---
 
-## [fit] _**linear types**_
+## [fit] _**Linear Types**_
 
 ![autoplay loop](water.mov)
 
@@ -275,29 +332,40 @@ let use_elon = elon;
 
 ---
 
-## let's update the trait a little
+# [fit] _**Lifetimes**_
+
+![](pic.jpg)
+
+---
+
+## simple rules
 
 ```rust
-trait Vehicle {
-    fn with_owner(person: Person) -> Self;
+let mut thing = 42;
 
-    // ...
-}
+let ref_to_thing = &thing;
 
-impl Vehicle for Rocket {
-    fn with_owner(person: Person) -> Self {
-        Self {
-            owner: person.name,
-            // ...
-        }
-    }
-}
+
+let another_ref_to_thing = &thing;
+```
+
+---
+
+## simple rules
+
+```rust
+let mut thing = 42;
+
+let ref_to_thing = &thing;
+//                  ----- immutable borrow here
+
+let another_ref_to_thing = &thing;
+
+let mut_ref_to_thing = &mut thing;
+// mutable borrow here      ^^^^^
 ```
 
 ---
 
 > Once you can walk barefoot (c), it's easy to walk with shoes (go) but it will take time to learn to ride a bike (rust)
 -- /u/freakhill on Reddit
-
----
-
