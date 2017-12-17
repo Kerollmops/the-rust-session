@@ -179,11 +179,9 @@ impl Car {
 
 ---
 
-# [fit] _**Whoops !**_
+# [fit] _**Traits**_
 
-![](crime.jpg)
-
-^ duplication of code
+![](red-lac.jpg)
 
 ---
 
