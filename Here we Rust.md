@@ -319,7 +319,7 @@ else
 
 ## [fit] _**Linear Types**_
 
-![autoplay loop](water.mov)
+![](jupiter.jpg)
 
 ---
 
@@ -520,3 +520,9 @@ $ cargo doc --open
 
 > Once you can walk barefoot (c), it's easy to walk with shoes (go) but it will take time to learn to ride a bike (rust)
 -- /u/freakhill on Reddit
+
+---
+
+# [fit] _**Practice**_
+
+![](colors.jpg)
