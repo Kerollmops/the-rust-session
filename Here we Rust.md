@@ -42,6 +42,12 @@ enum Result<T, E> {
 
 ---
 
+# [fit] _**Mecanics**_
+
+![](stairs.jpg)
+
+---
+
 ## mutability, constancy by default
 
 ```rust
@@ -72,6 +78,31 @@ println!("The lock shows {}", safe.lock);
 
 println!("The content is {}", safe.content);
 // the `content` field is private  ^^^^^^^
+```
+
+---
+
+## same for modules
+
+```rust
+mod car {
+    struct Tesla;
+    struct Delorean;
+}
+
+struct Plane;
+
+let my_tesla = car::Tesla;
+//                  ^^^^^ private struct
+```
+
+```bash
+car/
+    mod.rs
+    tesla.rs
+    delorean.rs
+
+plane.rs
 ```
 
 ---
@@ -328,7 +359,90 @@ let use_elon = elon;
 
 ---
 
-![](http://cl.ly/image/2v3K3f3d0J1X/britney.gif)
+# [fit] _**Iterators**_
+
+![](costa-rica.jpg)
+
+---
+
+## enumerate your values
+
+```rust
+let numbers = vec![1, 3, 12, 21, 42].into_iter();
+
+for (i, n) in numbers.enumerate() {
+    println!("{}. {}", i, n);
+}
+
+// should output:
+// 0. 1
+// 1. 3
+// 2. 12
+// 3. 21
+// 4. 42
+```
+
+---
+
+## basic combinations
+
+```rust
+let numbers = vec![1, 3, 12, 21, 42].into_iter();
+
+
+
+// should output:
+// 1 2
+// 3 4
+// 5 6
+```
+
+---
+
+## lazy evaluations
+
+```rust
+let infinity = 0..;
+
+for n in infinity.filter(|&n| n % 2 == 0).take(3) {
+    println!("{}", n);
+}
+
+// should output:
+// 0
+// 2
+// 4
+```
+
+---
+
+## map reduce
+
+```rust
+let infinity = 0..;
+
+let sum: usize = infinity.filter(|&n| n % 2 == 0)
+                         .map(|n| n * 3)
+                         .take(20)
+                         .sum();
+
+assert_eq!(sum, 1140);
+```
+
+---
+
+## powerfull libraries
+
+```rust
+let infinity = (0..).into_par_iter();
+
+let sum: usize = infinity.filter(|&n| n % 2 == 0)
+                         .map(|n| n * 3)
+                         .take(20)
+                         .sum();
+
+assert_eq!(sum, 1140);
+```
 
 ---
 
@@ -363,6 +477,43 @@ let another_ref_to_thing = &thing;
 
 let mut_ref_to_thing = &mut thing;
 // mutable borrow here      ^^^^^
+```
+
+---
+
+# [fit] _**Documentation**_
+
+![](pluto.png)
+
+---
+
+## available online
+
+Standard library on _[doc.rust-lang.org/std](https://doc.rust-lang.org/std/)_
+
+Core library on _[doc.rust-lang.org/core](https://doc.rust-lang.org/core/)_
+
+All published crates on _[crates.io](https://crates.io/)_
+
+And their documentations on _[docs.rs](https://docs.rs/)_
+
+---
+
+## but also locally
+
+```rust
+/// This text preceded by 3 slashes will be available
+/// as documentation. But will be visible
+/// only if it is a public one.
+///
+/// This is markdown, yes, and code blocks are tested.
+pub fn basic_function(value: i32) -> String {
+    // ...
+}
+```
+
+```bash
+$ cargo doc --open
 ```
 
 ---
