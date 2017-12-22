@@ -48,6 +48,22 @@ enum Result<T, E> {
 
 ---
 
+## Decomposition
+
+```rust
+let (a, b, c) = (1, 2, 3);
+
+if let Ok(file) = File::create("foo.txt") {
+    // ...
+}
+
+if let Some(bin_name) = env::args().next() {
+    // ...
+}
+```
+
+---
+
 ## mutability, constancy by default
 
 ```rust
@@ -181,7 +197,7 @@ impl Car {
 
 # [fit] _**Traits**_
 
-![](red-lac.jpg)
+![](forest.png)
 
 ---
 
@@ -289,7 +305,9 @@ println!("{}", message);
 let person = ("Elon", "Musk", 1971);
 
 match person {
-    ("Elon", "Musk", _)  => println!("Hello Elon !"),
+    ("Elon", "Musk", _) => {
+        println!("Hello Elon !")
+    },
     (name, lastname, birth) => {
         println!("Hello {} {}", name, lastname)
     },
@@ -303,12 +321,10 @@ match person {
 ```rust
 let person = ("Xavier", "Niel", 1962);
 
-if let ("Xavier", "Niel", _) = person
-{
+if let ("Xavier", "Niel", _) = person {
     println!("Hi Xavier !")
 }
-else
-{
+else {
     println!("Whooops ! who are you ?")
 }
 ```
@@ -329,8 +345,10 @@ struct Person {
 }
 
 impl Person {
-    fn with_name(name: String) -> Self {
-        Self { name }
+    fn with_name(name: &str) -> Self {
+        Self {
+            name: String::from(name)
+        }
     }
 }
 ```
@@ -344,8 +362,7 @@ fn enter_in_the_house(person: Person) {
     // ...
 }
 
-let name = String::from("Elon Musk");
-let elon = Person::with_name(elon);
+let elon = Person::with_name("Elon Musk");
 
 enter_in_the_house(elon);
 
@@ -385,14 +402,22 @@ for (i, n) in numbers.enumerate() {
 ## basic combinations
 
 ```rust
-let numbers = vec![1, 3, 12, 21, 42].into_iter();
+let infinity = 0..;
+let threes = repeat(3);
 
+let iterator = infinity.zip(threes)
+                       .map(|(a, b)| a + b)
+                       .take(4);
 
+for (i, n) in iterator.enumerate() {
+    println!("{}. {}", i, n);
+}
 
 // should output:
-// 1 2
-// 3 4
-// 5 6
+// 0. 3
+// 1. 4
+// 2. 5
+// 3. 6
 ```
 
 ---
@@ -524,3 +549,9 @@ $ cargo doc --open
 # [fit] _**Practice**_
 
 ![](colors.jpg)
+
+---
+
+Install **Rust** via _[rustup.rs](https://rustup.rs/)_
+
+or just play with it on _[play.rust-lang.org](https://play.rust-lang.org/)_
