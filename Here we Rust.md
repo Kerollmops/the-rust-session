@@ -510,11 +510,7 @@ let mut_ref_to_thing = &mut thing;
 
 ---
 
-## available online
-
 Standard library on _[doc.rust-lang.org/std](https://doc.rust-lang.org/std/)_
-
-Core library on _[doc.rust-lang.org/core](https://doc.rust-lang.org/core/)_
 
 All published crates on _[crates.io](https://crates.io/)_
 
@@ -555,3 +551,37 @@ $ cargo doc --open
 Install **Rust** via _[rustup.rs](https://rustup.rs/)_
 
 or just play with it on _[play.rust-lang.org](https://play.rust-lang.org/)_
+
+---
+
+create a _Person_ struct with a _name_, an _age_ and a constructor
+
+---
+
+create a _Kitchen_ struct that can accept only one _Person_ at a time
+
+---
+
+create the _Ingredient_ and _CookedIngredient_ enums with enough variants  to make tastefull diches
+
+---
+
+create a _Casserole_ struct that can accept multiple _Ingredient_ and returns _CookedIngredient_
+
+---
+
+create a _Dish_ enum that can be constructed with multiple _Ingredient_
+
+---
+
+add a _cook_ method to the _Kitchen_ struct that takes a _Casserole_ and multiple _Ingredient_ and returns a _Dish_
+
+---
+
+## Usefull links
+
+read news of the week on _[this-week-in-rust.org](https://this-week-in-rust.org/)_
+
+learn by example on _[rustbyexample.com](http://rustbyexample.com)_
+
+draw funny things with _[turtle.rs](http://turtle.rs/)_
