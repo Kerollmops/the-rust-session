@@ -578,6 +578,18 @@ add a _cook_ method to the _Kitchen_ struct that takes a _Casserole_ and multipl
 
 ---
 
+let's make a _Table_ type that can accept any number of _People_ with some useful methods
+
+---
+
+now we can serve the _Dish_ on the _Table_, but what if we want to serve other than just _Dishes_ ?
+
+---
+
+what about an _Edible_ Trait ?
+
+---
+
 ## Usefull links
 
 read news of the week on _[this-week-in-rust.org](https://this-week-in-rust.org/)_
