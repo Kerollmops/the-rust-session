@@ -596,4 +596,6 @@ read news of the week on _[this-week-in-rust.org](https://this-week-in-rust.org/
 
 learn by example on _[rustbyexample.com](http://rustbyexample.com)_
 
+dive into modules with this _[dev.to blogpost](https://dev.to/hertz4/rust-module-essentials-12oi)_
+
 draw funny things with _[turtle.rs](http://turtle.rs/)_
