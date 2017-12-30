@@ -18,15 +18,86 @@ let boolean: bool = true;
 let array = [0.0; 3];
 let slice = &[3, 4, 5];
 
+let tuples = (3, "cookies", 'b');
+
 let utf8_char = '😀';
 let utf8_str = "I like 🐢!";
-
-let tuples = (3, "cookies", 'b');
 ```
 
 ---
 
-## usefull enums
+## custom structs
+
+```rust
+struct Unit;
+
+struct Tuple(i32, String);
+
+struct Classic {
+    foo: String,
+    bar: i32,
+}
+```
+
+---
+
+## custom enums
+
+```rust
+enum Never{}; // ...the old never type (!)
+
+enum Unit {
+    Variant1,
+    Variant2,
+}
+
+enum Mixed {
+    Foo { foo: i32, bar; f32 },
+    Bar(f64, u8)
+}
+```
+
+^ unit enum is not a C enum
+
+---
+
+## the unit type
+
+```rust
+let unit = ();
+
+fn foo() {
+    // ...
+}
+
+fn bar() -> () {
+    // ...
+}
+```
+
+---
+
+## the never type
+
+```rust
+let never = !;
+
+fn will_never_return() -> ! {
+    loop { /* ... */ }
+}
+
+impl TryFrom<Self> for String {
+    fn try_from(string: Self) -> Result<Self, !> {
+        // never returns an error
+    }
+}
+```
+
+^ `let Ok(string) = String::try_from(another_string);`
+
+---
+
+## useful enums
 
 ```rust
 enum Option<T> {
@@ -38,6 +109,49 @@ enum Result<T, E> {
     Ok(T),
     Err(E),
 }
+```
+
+---
+
+## useful structs
+
+```rust
+let vector = Vec::new();
+
+let hashmap = HashMap::new();
+
+let tcpstream = TcpStream::connect("127.0.0.1:34254");
+
+let path = Path::new("/tmp/foo/bar.txt");
+```
+
+---
+
+## default, small aside
+
+```rust
+let mut hashmap = HashMap::new();
+
+let value = hashmap.entry("foo").or_default();
+
+assert_eq!(*value, 0);
+
+let value = hashmap["bar"];
+//                 ^^^^^^^ Index accessor not implemented
+```
+
+---
+
+## The String type
+
+```rust
+let string = String::from("world");
+
+let formatted = format!("Here is a {:?} string !", "cool");
+
+let another = format!("hello {kiki} !", kiki="Rock");
+
+let concat = String::from("The cat is") + " alive !";
 ```
 
 ---
@@ -67,10 +181,8 @@ if let Some(bin_name) = env::args().next() {
 ## mutability, constancy by default
 
 ```rust
-// all bindings are immutable by default
 let thing = 42;
 
-// but you can make them mutable if necessary
 let mut another_thing = 32;
 another_thing += 10;
 
@@ -87,7 +199,6 @@ struct Safe {
     content: Content,
 }
 
-// assume we declare `Safe::new`
 let safe = Safe::new();
 
 println!("The lock shows {}", safe.lock);
@@ -103,22 +214,15 @@ println!("The content is {}", safe.content);
 ```rust
 mod car {
     struct Tesla;
-    struct Delorean;
+    pub struct Delorean;
 }
 
 struct Plane;
 
+let my_delorean = car::Delorean;
+
 let my_tesla = car::Tesla;
 //                  ^^^^^ private struct
-```
-
-```bash
-car/
-    mod.rs
-    tesla.rs
-    delorean.rs
-
-plane.rs
 ```
 
 ---
@@ -156,6 +260,20 @@ impl Animal {
     }
 
     // ...
+}
+```
+
+---
+
+## Automatic deriving
+
+```rust
+#[derive(Debug, Copy, Clone)]
+enum Color {
+    White,
+    Silver,
+    Pink,
+    Red,
 }
 ```
 
@@ -250,8 +368,8 @@ fn display_a_vehicle<V: Vehicle>(vehicle: V)
     let position = vehicle.position();
     let velocity = vehicle.velocity();
 
-    println!("the vehicle position is {}", position);
-    println!("the vehicle velocity is {}", velocity);
+    println!("the vehicle position is {:?}", position);
+    println!("the vehicle velocity is {:?}", velocity);
 }
 ```
 
@@ -299,18 +417,23 @@ println!("{}", message);
 
 ---
 
-## with complex partterns
+## Pattern match enum
 
 ```rust
-let person = ("Elon", "Musk", 1971);
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
 
-match person {
-    ("Elon", "Musk", _) => {
-        println!("Hello Elon !")
-    },
-    (name, lastname, birth) => {
-        println!("Hello {} {}", name, lastname)
-    },
+fn value_in_cents(coin: Coin) -> u32 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
 }
 ```
 
@@ -321,11 +444,9 @@ match person {
 ```rust
 let person = ("Xavier", "Niel", 1962);
 
-if let ("Xavier", "Niel", _) = person {
+if let ("Xavier", "Niel", _) = person
+{
     println!("Hi Xavier !")
-}
-else {
-    println!("Whooops ! who are you ?")
 }
 ```
 
@@ -370,7 +491,7 @@ let use_elon = elon;
 //             ^^^^ can't use value after move
 ```
 
-^ try using `elon` again, it doesn't work
+^ show `std::mem::drop` signature
 
 ---
 
@@ -454,7 +575,7 @@ assert_eq!(sum, 1140);
 
 ---
 
-## powerfull libraries
+## powerful libraries
 
 ```rust
 let infinity = (0..).into_par_iter();
@@ -478,7 +599,7 @@ assert_eq!(sum, 1140);
 ## simple rules
 
 ```rust
-let mut thing = 42;
+let thing = 42;
 
 let ref_to_thing = &thing;
 
@@ -501,6 +622,44 @@ let another_ref_to_thing = &thing;
 let mut_ref_to_thing = &mut thing;
 // mutable borrow here      ^^^^^
 ```
+
+---
+
+## lightweight structures
+
+```rust
+struct OnlyDigits<'a> {
+    text: &'a str
+}
+
+impl<'a> OnlyDigits<'a> {
+    pub fn new(text: &'a str) -> Option<Self> {
+        // construct only if text is only digits
+    }
+}
+```
+
+---
+
+## lightweight memory
+
+```rust
+
+
+// a move or a clone of the String is needed
+fn moving_function(text: String);
+
+
+// just a borrow of the internal str
+fn borrowing_function(text: &str);
+
+```
+
+---
+
+Copy On Write is powerful sometimes let's see _[the Cow enum](https://doc.rust-lang.org/std/borrow/enum.Cow.html)_ declaration
+
+While you only read the inner data no clone is done
 
 ---
 
@@ -590,11 +749,21 @@ what about an _Edible_ Trait ?
 
 ---
 
-## Usefull links
+## Useful links
 
 read news of the week on _[this-week-in-rust.org](https://this-week-in-rust.org/)_
 
 learn by example on _[rustbyexample.com](http://rustbyexample.com)_
+
+the _[memory mecanics](https://rufflewind.com/img/rust-move-copy-borrow.png)_  and _[containers](https://goo.gl/67RKj9)_ cheat sheets
+
+official _[collections guide](https://doc.rust-lang.org/std/collections/)_
+
+---
+
+## Other links
+
+The _[Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook/intro.html)_ is a collection of simple examples
 
 dive into modules with this _[dev.to blogpost](https://dev.to/hertz4/rust-module-essentials-12oi)_
 
