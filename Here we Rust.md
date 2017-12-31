@@ -18,7 +18,7 @@ let boolean: bool = true;
 let array = [0.0; 3];
 let slice = &[3, 4, 5];
 
-let tuples = (3, "cookies", 'b');
+let tuples = (0b0011, "cookies", 'b');
 
 let utf8_char = '😀';
 let utf8_str = "I like 🐢!";
@@ -26,10 +26,28 @@ let utf8_str = "I like 🐢!";
 
 ---
 
+## different kind of loop
+
+```rust
+loop {
+    // ...
+}
+
+for x in 0..25 {
+    // ...
+}
+
+while x > 32 {
+    // ...
+}
+```
+
+---
+
 ## custom structs
 
 ```rust
-struct Unit;
+struct Unit; // ...like an empty tuple `()`
 
 struct Tuple(i32, String);
 
@@ -44,7 +62,7 @@ struct Classic {
 ## custom enums
 
 ```rust
-enum Never{}; // ...the old never type (!)
+enum Never{}; // ...the old never type `!`
 
 enum Unit {
     Variant1,
@@ -52,7 +70,7 @@ enum Unit {
 }
 
 enum Mixed {
-    Foo { foo: i32, bar; f32 },
+    Foo { foo: i32, bar: f32 },
     Bar(f64, u8)
 }
 ```
@@ -86,10 +104,8 @@ fn will_never_return() -> ! {
     loop { /* ... */ }
 }
 
-impl TryFrom<Self> for String {
-    fn try_from(string: Self) -> Result<Self, !> {
-        // never returns an error
-    }
+fn never_error(text: String) -> Result<String, !> {
+    Ok(text)
 }
 ```
 
@@ -110,6 +126,63 @@ enum Result<T, E> {
     Err(E),
 }
 ```
+
+---
+
+# [fit] _**Match**_
+
+![](magdalena.jpg)
+
+---
+
+## Pattern match enum
+
+```rust
+
+
+fn maybe_return_thing() -> Option<u32> { /* ... */ }
+
+match maybe_return_thing() {
+    Some(thing) => println!("{}", thing),
+    None => (),
+}
+```
+
+---
+
+## a switch case but better
+
+```rust
+let age = 42_u32;
+
+let message = match age {
+    0...8  => "you are too young, sorry !",
+    9...18 => "ok body, you come in !",
+    _      => "you are too old, man !",
+};
+
+println!("{}", message);
+```
+
+---
+
+## syntactic sugar for simple cases
+
+```rust
+
+
+fn maybe_return_thing() -> Option<u32> { /* ... */ }
+
+if let Some(13) = maybe_return_thing() {
+    println!("{}", 13)
+}
+```
+
+---
+
+# [fit] _**Standard**_
+
+![](water-micro.jpg)
 
 ---
 
@@ -178,9 +251,11 @@ if let Some(bin_name) = env::args().next() {
 
 ---
 
-## mutability, constancy by default
+## constancy by default
 
 ```rust
+
+
 let thing = 42;
 
 let mut another_thing = 32;
@@ -395,63 +470,6 @@ impl<V: Vehicle> Garage<V> {
 
 ---
 
-# [fit] _**Match**_
-
-![](magdalena.jpg)
-
----
-
-## a switch case but better
-
-```rust
-let age = 42_u32;
-
-let message = match age {
-    0...8  => "you are too young, sorry !",
-    9...18 => "ok body, you come in !",
-    _      => "you are too old, man !",
-};
-
-println!("{}", message);
-```
-
----
-
-## Pattern match enum
-
-```rust
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter,
-}
-
-fn value_in_cents(coin: Coin) -> u32 {
-    match coin {
-        Coin::Penny => 1,
-        Coin::Nickel => 5,
-        Coin::Dime => 10,
-        Coin::Quarter => 25,
-    }
-}
-```
-
----
-
-## syntactic sugar for simple cases
-
-```rust
-let person = ("Xavier", "Niel", 1962);
-
-if let ("Xavier", "Niel", _) = person
-{
-    println!("Hi Xavier !")
-}
-```
-
----
-
 ## [fit] _**Linear Types**_
 
 ![](jupiter.jpg)
@@ -498,6 +516,24 @@ let use_elon = elon;
 # [fit] _**Iterators**_
 
 ![](costa-rica.jpg)
+
+---
+
+## some details
+
+```rust
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+
+    fn count(self) -> usize { ... }
+
+    fn last(self) -> Option<Self::Item> { ... }
+
+    // ...
+}
+```
 
 ---
 
