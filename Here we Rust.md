@@ -701,7 +701,7 @@ While you only read the inner data no clone is done
 
 # [fit] _**Documentation**_
 
-![](pluto.png)
+![](pluto.jpg)
 
 ---
 
