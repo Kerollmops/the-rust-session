@@ -1,6 +1,6 @@
 theme: Poster, 1
 
-# [fit] _**Here we Rust !**_
+# [fit] _**The Rust session**_
 
 ![](red.jpg)
 
@@ -8,13 +8,37 @@ theme: Poster, 1
 
 ## some primitive types
 
+```golang
+var integer int = 42
+var unsigned uint64 = 42000
+var f float64 = 32.542
+
+var b bool = true
+```
+
 ```rust
 let integer: i32 = 42;
 let unsigned: u64 = 42_000;
 let float: f64 = 32.542;
 
 let boolean: bool = true;
+```
 
+---
+
+## arrays and strings
+
+```golang
+var array = [3]float64{0.0}
+var slice []float64 = array[1:2]
+
+// no real tuples in go
+
+var utf8_char rune = '😀';
+var utf8_str string = "I like 🐢!";
+```
+
+```rust
 let array = [0.0; 3];
 let slice = &[3, 4, 5];
 
@@ -27,6 +51,16 @@ let utf8_str = "I like 🐢!";
 ---
 
 ## different kind of loop
+
+```golang
+for i := 0; i < 25; i++ {
+    // ...
+}
+
+for x > 32 {
+    // ...
+}
+```
 
 ```rust
 loop {
@@ -46,8 +80,17 @@ while x > 32 {
 
 ## custom structs
 
+```golang
+type Unit struct{}
+
+type Classic struct {
+    foo string
+    bar int32
+}
+```
+
 ```rust
-struct Unit; // ...like an empty tuple `()`
+struct Unit; // ...equivalent to an empty tuple `()`
 
 struct Tuple(i32, String);
 
@@ -61,8 +104,15 @@ struct Classic {
 
 ## custom enums
 
+```golang
+const (
+   VARIANT1 = iota // 0
+   VARIANT2 = iota // 1
+)
+```
+
 ```rust
-enum Never{}; // ...the old never type `!`
+enum Never{}; // ...equivalent to the never type `!`
 
 enum Unit {
     Variant1,
@@ -75,11 +125,15 @@ enum Mixed {
 }
 ```
 
-^ unit enum is not a C enum
+^ unit enum is not a C enum, does not allow automatic cast form int
 
 ---
 
 ## the unit type
+
+```golang
+var unit struct{}
+```
 
 ```rust
 let unit = ();
@@ -109,8 +163,6 @@ fn never_error(text: String) -> Result<String, !> {
 }
 ```
 
-^ `let Ok(string) = String::try_from(another_string);`
-
 ---
 
 ## useful enums
@@ -137,9 +189,18 @@ enum Result<T, E> {
 
 ## Pattern match enum
 
+```golang
+switch number {
+case 12:
+    // ...
+case 15:
+    // ...
+default:
+    // ...
+}
+```
+
 ```rust
-
-
 fn maybe_return_thing() -> Option<u32> { /* ... */ }
 
 match maybe_return_thing() {
@@ -151,6 +212,19 @@ match maybe_return_thing() {
 ---
 
 ## a switch case but better
+
+```golang
+var age unint32 = 42
+
+switch {
+case age >= 0 && age <= 8:
+    fmt.Println("you are too young, sorry !")
+case age >= 9 && age <= 18:
+    fmt.Println("ok body, you come in !")
+default:
+    fmt.Println("you are too old, man !")
+}
+```
 
 ```rust
 let age = 42_u32;
@@ -188,6 +262,14 @@ if let Some(13) = maybe_return_thing() {
 
 ## useful structs
 
+```golang
+var vector []a
+
+var hashmap map[string]int
+
+conn, err := net.Dial("tcp", "127.0.0.1:34254")
+```
+
 ```rust
 let vector = Vec::new();
 
@@ -201,6 +283,16 @@ let path = Path::new("/tmp/foo/bar.txt");
 ---
 
 ## default, small aside
+
+```golang
+hashmap := make(map[string]int)
+
+value, exist := hashmap["foo"]
+// value = 0, exist = false
+
+value := hashmap["bar"]
+// value = 0
+```
 
 ```rust
 let mut hashmap = HashMap::new();
@@ -216,6 +308,14 @@ let value = hashmap["bar"];
 ---
 
 ## The String type
+
+```golang
+var str = "world"
+
+var formatted = fmt.Sprintf("Here is a %s string !", "cool")
+
+// no easy way to concatenate strings ?
+```
 
 ```rust
 let string = String::from("world");
@@ -267,6 +367,13 @@ assert_eq!(another_thing, 42);
 ---
 
 ## visibility, privacy is the key
+
+```golang
+type Safe struct {
+    Lock SafeLock
+    content Content
+}
+```
 
 ```rust
 struct Safe {
@@ -388,7 +495,87 @@ impl Car {
 
 ---
 
-# [fit] _**Traits**_
+# [fit] _**Go Duck Typing**_
+
+![](rubber-duck.jpg)
+
+---
+
+## Why not declaring an interface ?
+
+```golang
+type vehicule interface {
+    // not possible to declare static methods
+
+    position() [3]float32
+    velocity() [3]float32
+}
+```
+
+_an Interface is a contract you sign with a type_
+
+---
+
+## Easy to implement
+
+```golang
+func (r rocket) position() [3]float32 {
+    r.pos
+}
+func (r rocket) velocity() [3]float32 {
+    r.vel
+}
+
+func (r car) position() [3]float32 {
+    r.pos
+}
+func (r car) velocity() [3]float32 {
+    r.vel
+}
+```
+
+---
+
+## Simplicity introduce Complexity
+
+```golang
+type Hello interface {
+    Say()
+}
+
+type Goodbye interface {
+    Say()
+}
+
+type bonjour struct{}
+
+func (bonjour) Say() {
+    fmt.Println("bonjour")
+}
+```
+
+---
+
+## Simplicity introduce Complexity
+
+```golang
+func createHello() Hello {
+    return bonjour{}
+}
+
+func createGoodbye() Goodbye {
+    return bonjour{}
+}
+
+func main() {
+    createHello().Say()     // print "bonjour"
+    createGoodbye().Say()   // print "bonjour"
+}
+```
+
+---
+
+# [fit] _**Rust Traits**_
 
 ![](forest.png)
 
@@ -405,7 +592,7 @@ trait Vehicle {
 }
 ```
 
-_a Trait is a contract you sign with an object_
+_a Trait is a contract you sign with a type_
 
 ---
 
